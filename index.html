@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSB - Оформить заказ</title>
+    <link rel="stylesheet" href="style.css">
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "iC56VrFVukZULNSi3",
+      });
+   })();
+</script>
+</head>
+<body>
+
+    <header>
+        <a href="https://imgur.com/dPr3lxU"><img src="https://imgur.com/dPr3lxU.png" class="logo"></a>
+        <h1>RSB</h1>
+        <p>Robux Sad Buy - Оформление заказа</p>
+    </header>
+
+    <main>
+        <div class="input-container">
+            <label for="rubles">Рубли:</label>
+            <input type="number" id="rubles" name="rubles" placeholder="0" min="0" step="1" max="99999">
+        </div>
+
+        <div class="input-container">
+            <label for="robux">Робуксы:</label>
+            <input type="number" id="robux" name="robux" placeholder="50" min="50" readonly>
+        </div>
+
+        <div class="input-container">
+            <label for="nickname">Никнейм (на английском):</label>
+            <input type="text" id="nickname" name="nickname" placeholder="YourNickname" pattern="[A-Za-z0-9_]+" title="Только латинские буквы, цифры и подчеркивание">
+        </div>
+
+        <button class="buy-button" id="order-button">Оформить заказ</button>
+    </main>
+
+    <footer>
+        <p>RSB | Robux Sad Buy</p>
+        <p>© Все права защищены</p>
+      <p>2024-2025</p>
+    </footer>
+
+    <div id="telegram-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <label for="telegram-username">Ваш Telegram-юзер (начинается с @):</label>
+            <input type="text" id="telegram-username" name="telegram-username" placeholder="@YourTelegramUsername" pattern="^@.*$" title="Пожалуйста, введите ваш Telegram-юзер, начиная с @">
+            <button id="submit-telegram" class="buy-button">Подтвердить</button>
+        </div>
+    </div>
+
+    <script>
+        const rublesInput = document.getElementById("rubles");
+        const robuxInput = document.getElementById("robux");
+        const nicknameInput = document.getElementById("nickname");
+        const orderButton = document.getElementById("order-button");
+        const telegramModal = document.getElementById("telegram-modal");
+        const telegramUsernameInput = document.getElementById("telegram-username");
+        const submitTelegramButton = document.getElementById("submit-telegram");
+        const closeButton = document.querySelector(".close-button");
+
+        rublesInput.addEventListener("input", function() {
+            let rubles = parseInt(this.value);
+
+            if (isNaN(rubles) || rubles < 0) {
+                this.value = ""; // Очищаем поле
+                robuxInput.value = "";
+                return;
+            }
+
+            if (rubles > 99999) {
+                this.value = "99999";
+                rubles = 99999;
+            }
+
+            let robux = Math.floor(rubles * 1.28);
+
+            if (robux < 50) {
+                robux = "";
+                robuxInput.placeholder = "Минимум 50";
+            } else {
+                robuxInput.placeholder = "50";
+            }
+            robuxInput.value = robux;
+        });
+
+        orderButton.addEventListener("click", function() {
+            if (rublesInput.value === "" || robuxInput.value === "" || nicknameInput.value === "") {
+                alert("Пожалуйста, заполните все поля!");
+                return;
+            }
+
+            telegramModal.style.display = "block";
+        });
+
+        submitTelegramButton.addEventListener("click", function() {
+            if (telegramUsernameInput.value === "") {
+                alert("Пожалуйста, введите ваш Telegram-юзер!");
+                return;
+            }
+
+            if (!telegramUsernameInput.value.startsWith("@")) {
+                alert("Ваш Telegram-юзер должен начинаться с @");
+                return;
+            }
+
+            const rubles = rublesInput.value;
+            const robux = robuxInput.value;
+            const nickname = nicknameInput.value;
+            const telegramUsername = telegramUsernameInput.value;
+
+            sendOrder(rubles, robux, nickname, telegramUsername);
+            telegramModal.style.display = "none";
+
+            rublesInput.value = "";
+            robuxInput.value = "";
+            nicknameInput.value = "";
+            telegramUsernameInput.value = "";
+        });
+
+        closeButton.addEventListener("click", function() {
+            telegramModal.style.display = "none";
+        });
+
+        window.addEventListener("click", function(event) {
+            if (event.target == telegramModal) {
+                telegramModal.style.display = "none";
+            }
+        });
+
+        function sendOrder(rubles, robux, nickname, telegramUsername) {
+            const templateParams = {
+                rubles: rubles,
+                robux: robux,
+                nickname: nickname,
+                telegramUsername: telegramUsername
+            };
+
+            emailjs.send('service_2lrafc9', 'template_uvvbs64', templateParams) // Замените на свои Service ID и Template ID из EmailJS
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    alert("Заказ успешно оформлен! Проверьте ваш Telegram: " + telegramUsername);
+                }, function(error) {
+                    console.error('FAILED...', error);
+                    alert("Ошибка при оформлении заказа. Пожалуйста, попробуйте позже.");
+                });
+
+            //TODO: Replace this code with code to send the same information to the zhanul_ka telegram user
+
+        }
+
+    </script>
+</body>
+</html>
