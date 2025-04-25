@@ -25,6 +25,7 @@
     </header>
 
     <main>
+      <selection class="content">
         <div class="input-container">
             <label for="rubles">Рубли:</label>
             <input type="number" id="rubles" name="rubles" placeholder="0" min="0" step="1" max="99999">
@@ -41,6 +42,7 @@
         </div>
 
         <button class="buy-button" id="order-button">Оформить заказ</button>
+        </selection>
     </main>
 
     <footer>
@@ -53,7 +55,7 @@
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <label for="telegram-username">Ваш Telegram-юзер (начинается с @):</label>
-            <input type="text" id="telegram-username" name="telegram-username" placeholder="@YourTelegramUsername" pattern="^@.*$" title="Пожалуйста, введите ваш Telegram-юзер, начиная с @">
+            <input type="text" id="telegram-username" name="telegram-username" placeholder="" pattern="^@.*$" title="Пожалуйста, введите ваш Telegram-юзер, начиная с @">
             <button id="submit-telegram" class="buy-button">Подтвердить</button>
         </div>
     </div>
